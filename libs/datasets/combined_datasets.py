@@ -24,7 +24,7 @@ from libs.datasets.sources.test_and_trace import TestAndTraceData
 from libs.datasets.timeseries import TimeseriesDataset
 from libs.datasets.latest_values_dataset import LatestValuesDataset
 from libs.datasets.sources.nytimes_dataset import NYTimesDataset
-from libs.datasets.sources.nha_hospitalization import NevadaHospitalAssociationData
+#from libs.datasets.sources.nha_hospitalization import NevadaHospitalAssociationData
 #from libs.datasets.sources.cds_dataset import CDSDataset
 from libs.datasets.sources.covid_tracking_source import CovidTrackingDataSource
 from libs.datasets.sources.covid_care_map import CovidCareMapBeds
@@ -77,7 +77,7 @@ ALL_TIMESERIES_FEATURE_DEFINITION: FeatureDataSourceMap = {
     CommonFields.CURRENT_VENTILATED: [
         CovidCountyDataDataSource,
         CovidTrackingDataSource,
-        NevadaHospitalAssociationData,
+        # NevadaHospitalAssociationData,
     ],
     CommonFields.DEATHS: [NYTimesDataset],
     CommonFields.HOSPITAL_BEDS_IN_USE_ANY: [CovidCountyDataDataSource],
@@ -97,10 +97,10 @@ ALL_FIELDS_FEATURE_DEFINITION: FeatureDataSourceMap = {
     CommonFields.CURRENT_HOSPITALIZED: [
         CovidCountyDataDataSource,
         CovidTrackingDataSource,
-        NevadaHospitalAssociationData,
+        # NevadaHospitalAssociationData,
         TexasHospitalizations,
     ],
-    CommonFields.CURRENT_HOSPITALIZED_TOTAL: [NevadaHospitalAssociationData],
+    CommonFields.CURRENT_HOSPITALIZED_TOTAL: [],#NevadaHospitalAssociationData],
     CommonFields.ICU_BEDS: [CovidCountyDataDataSource, CovidCareMapBeds],
     CommonFields.ICU_TYPICAL_OCCUPANCY_RATE: [CovidCareMapBeds],
     CommonFields.LICENSED_BEDS: [CovidCareMapBeds],
