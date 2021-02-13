@@ -197,4 +197,5 @@ def _get_weight_by_fips(fips: str, method: ICUWeightsPath = ICUWeightsPath.POPUL
     """
     with open(method.value) as f:
         weights = json.load(f)
-    return weights[fips]
+
+    return weights.get(fips, 1.0)
