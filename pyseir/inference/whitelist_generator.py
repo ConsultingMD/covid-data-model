@@ -55,8 +55,10 @@ class WhitelistGenerator:
         latest_values = combined_datasets.load_us_latest_dataset().get_subset(
             aggregation_level=AggregationLevel.COUNTY
         )
+        latest_values.data = latest_values.data.drop(latest_values.data[latest_values.data.state == 'PR'].index)
         columns = [CommonFields.FIPS, CommonFields.STATE, CommonFields.COUNTY]
         counties = latest_values.data[columns]
+
         # parallel load and compute
         df_candidates = counties.fips.apply(_whitelist_candidates_per_fips)
         # join extra data

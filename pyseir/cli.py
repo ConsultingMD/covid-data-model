@@ -26,7 +26,8 @@ sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), ".."
 root = logging.getLogger()
 
 DEFAULT_RUN_MODE = "can-inference-derived"
-ALL_STATES = [state_obj.abbr for state_obj in us.STATES] + ["PR"]
+ALL_STATES = [state_obj.abbr for state_obj in us.STATES] #+ ["PR"]
+print(ALL_STATES)
 
 
 def _cache_global_datasets():

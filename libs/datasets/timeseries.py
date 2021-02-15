@@ -307,6 +307,10 @@ class TimeseriesDataset(dataset_base.DatasetBase):
 def _remove_padded_nans(df, columns):
     if df[columns].isna().all().all():
         return df.loc[[False] * len(df), :].reset_index(drop=True)
+    try:
+        first_valid_index = min(df[column].first_valid_index() for column in columns)
+    except:
+        print(df)
 
     first_valid_index = min(df[column].first_valid_index() for column in columns)
     last_valid_index = max(df[column].last_valid_index() for column in columns)
