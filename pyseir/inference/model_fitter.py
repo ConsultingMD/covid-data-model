@@ -186,7 +186,7 @@ class ModelFitter:
         regional_input,
         ref_date=datetime(year=2020, month=1, day=1),
         min_deaths=2,
-        n_years=1,
+        n_years=2.0,
         cases_to_deaths_err_factor=0.1,
         hospital_to_deaths_err_factor=0.5,
         percent_error_on_max_observation=0.5,

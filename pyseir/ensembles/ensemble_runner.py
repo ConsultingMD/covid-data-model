@@ -118,7 +118,7 @@ class EnsembleRunner:
     def __init__(
         self,
         regional_input: RegionalInput,
-        n_years=0.5,
+        n_years=2.0,
         n_samples=250,
         suppression_policy=(0.35, 0.5, 0.75, 1),
         skip_plots=False,
