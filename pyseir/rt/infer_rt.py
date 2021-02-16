@@ -541,7 +541,7 @@ class RtInferenceEngine:
 
         return available_timeseries
 
-    def infer_all(self, plot=True, shift_deaths=0):
+    def infer_all(self, plot=False, shift_deaths=0):
         """
         Infer R_t from all available data sources.
 
