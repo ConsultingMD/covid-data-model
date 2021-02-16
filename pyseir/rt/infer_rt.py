@@ -160,29 +160,33 @@ def filter_and_smooth_input_data(
             requirements.append(True)
 
         if all(requirements):
-            if column == "cases":
-                fig = plt.figure(figsize=(10, 6))
-                ax = fig.add_subplot(111)  # plt.axes
-                ax.set_yscale("log")
-                chart_min = max(0.1, smoothed.min())
-                ax.set_ylim((chart_min, df[column].max()))
-                plt.scatter(
-                    dates[-len(df[column]) :],
-                    df[column],
-                    alpha=0.3,
-                    label=f"Smoothing of: {column}",
-                )
-                plt.plot(dates[-len(df[column]) :], smoothed)
-                plt.grid(True, which="both")
-                plt.xticks(rotation=30)
-                plt.xlim(min(dates[-len(df[column]) :]), max(dates) + timedelta(days=2))
 
-                if not figure_collector:
-                    plot_path = region.run_artifact_path_to_write(RunArtifact.RT_SMOOTHING_REPORT)
-                    plt.savefig(plot_path, bbox_inches="tight")
-                    plt.close(fig)
-                else:
-                    figure_collector["1_smoothed_cases"] = fig
+            if column == "cases":
+
+                import os
+                if os.environ.get('PYSEIR_PLOT_RESULTS') == 'True':
+                    fig = plt.figure(figsize=(10, 6))
+                    ax = fig.add_subplot(111)  # plt.axes
+                    ax.set_yscale("log")
+                    chart_min = max(0.1, smoothed.min())
+                    ax.set_ylim((chart_min, df[column].max()))
+                    plt.scatter(
+                        dates[-len(df[column]) :],
+                        df[column],
+                        alpha=0.3,
+                        label=f"Smoothing of: {column}",
+                    )
+                    plt.plot(dates[-len(df[column]) :], smoothed)
+                    plt.grid(True, which="both")
+                    plt.xticks(rotation=30)
+                    plt.xlim(min(dates[-len(df[column]) :]), max(dates) + timedelta(days=2))
+
+                    if not figure_collector:
+                        plot_path = region.run_artifact_path_to_write(RunArtifact.RT_SMOOTHING_REPORT)
+                        plt.savefig(plot_path, bbox_inches="tight")
+                        plt.close(fig)
+                    else:
+                        figure_collector["1_smoothed_cases"] = fig
 
             df[column] = smoothed
         else:
