@@ -38,8 +38,10 @@ def load_pyseir_fitter_initial_conditions_df():
     ).set_index("fips")
 
     df['eps_final'] = 0.3
-    df['summer_peak_t0'] = 60
+    df['summer_peak_t0'] = 120
     df['summer_peak_norm'] = 0.1
+    df['winter_peak_t0'] = 270
+    df['winter_peak_norm'] = 0.1
     return df
 
 
@@ -159,22 +161,28 @@ class ModelFitter:
         limit_t_delta_phases=[14, 150],  # good as of June 3, 2020 may need to update in the future
         error_t_delta_phases=1,
         test_fraction=0.25,
-        limit_test_fraction=[0.02, 1],
+        limit_test_fraction=[0.1, 1],
         error_test_fraction=0.02,
         hosp_fraction=0.7,
-        limit_hosp_fraction=[0.25, 1],
+        limit_hosp_fraction=[0.5, 1],
         error_hosp_fraction=0.05,
         # Let's not fit this to start...
         errordef=0.5,
         eps_final=0.3,
-        limit_eps_final=[0.20, 2.0],
+        limit_eps_final=[0.2, 0.4],
         error_eps_final=0.005,
         summer_peak_norm=0.1,
         limit_summer_peak_norm=[0, .5],
         error_summer_peak_norm=0.02,
-        summer_peak_t0=60,
-        limit_summer_peak_t0=[30, 120],
+        summer_peak_t0=120,
+        limit_summer_peak_t0=[30, 180],
         error_summer_peak_t0=2,
+        winter_peak_norm=0.2,
+        limit_winter_peak_norm=[0, 1],
+        error_winter_peak_norm=0.02,
+        winter_peak_t0=270,
+        limit_winter_peak_t0=[230, 320],
+        error_winter_peak_t0=2,
     )
 
     REFF_LOWER_BOUND = 0.7
@@ -238,6 +246,8 @@ class ModelFitter:
             "log10_I_initial",
             "summer_peak_norm",
             "summer_peak_t0",
+            "winter_peak_norm",
+            "winter_peak_t0",
         ]
 
         self.SEIR_kwargs = self.get_average_seir_parameters()
@@ -281,6 +291,8 @@ class ModelFitter:
             "log10_I_initial",
             "summer_peak_norm",
             "summer_peak_t0",
+            "winter_peak_norm",
+            "winter_peak_t0",
         ]
         self.fit_params.update(
             self.regional_input.get_pyseir_fitter_initial_conditions(INITIAL_PARAM_SETS)
@@ -449,7 +461,8 @@ class ModelFitter:
         return cases_stdev, hosp_stdev, deaths_stdev
 
     def run_model(self, R0, eps, t_break, eps2, t_delta_phases, eps_final,
-                  t_eps_final_start, log10_I_initial, summer_peak_norm, summer_peak_t0):
+                  t_eps_final_start, log10_I_initial, summer_peak_norm, summer_peak_t0,
+                  winter_peak_norm, winter_peak_t0):
         """
         Generate the model and run.
 
@@ -479,7 +492,9 @@ class ModelFitter:
             eps_final=eps_final,
             t_break_final=t_eps_final_start,
             summer_peak_norm=summer_peak_norm,
-            summer_peak_t0=summer_peak_t0
+            summer_peak_t0=summer_peak_t0,
+            winter_peak_norm=winter_peak_norm,
+            winter_peak_t0=winter_peak_t0,
         )
 
         age_distribution = 1
@@ -514,7 +529,9 @@ class ModelFitter:
         hosp_fraction,
         log10_I_initial,
         summer_peak_norm,
-        summer_peak_t0
+        summer_peak_t0,
+        winter_peak_norm,
+        winter_peak_t0
     ):
         """
         Fit SEIR model by MLE.
@@ -553,7 +570,7 @@ class ModelFitter:
         not_allowed_days_penalty = 0.0
 
         # Look at the last 3 weeks of data. In simulation time, this is given by:
-        t_eps_final_start = (datetime.today() - self.ref_date).days - t0 - 30
+        t_eps_final_start = (datetime.today() - self.ref_date).days - t0 - 45
 
         # If using more future days than allowed, updated not_allowed_days_penalty
         if number_of_not_allowed_days_used > self.days_allowed_beyond_ref:
